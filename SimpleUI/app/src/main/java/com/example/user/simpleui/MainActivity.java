@@ -2,13 +2,12 @@ package com.example.user.simpleui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -17,9 +16,8 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     EditText editText;
     RadioGroup radioGroup;
-    String sex = "";
-    String selectedSex = "Male";
-    String name = "";
+    String drinkName = "black tea";
+    String note = "";
     CheckBox checkBox;
 
     @Override
@@ -57,44 +55,19 @@ public class MainActivity extends AppCompatActivity {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.maleRadioButton) {
-                    selectedSex = "Male";
-                } else if (checkedId == R.id.femaleRadioButton) {
-                    selectedSex = "Female";
-                }
+                RadioButton radioButton = (RadioButton)findViewById(checkedId);
+                drinkName = radioButton.getText().toString();
             }
         });
 
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(name != "")
-                {
-                    changeTextView();
-                }
-            }
-        });
     }
 
     public void click(View view)
     {
-        name = editText.getText().toString();
-        sex = selectedSex;
-        changeTextView();
+        note = editText.getText().toString();
+        String text = note;
+        textView.setText(text);
         editText.setText("");
-    }
 
-    public void changeTextView()
-    {
-        if (checkBox.isChecked())
-        {
-            String text = name;
-            textView.setText(text);
-        }
-        else
-        {
-            String text = name + " sex: " + sex;
-            textView.setText(text);
-        }
     }
 }
