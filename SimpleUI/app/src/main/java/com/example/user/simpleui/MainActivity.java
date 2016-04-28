@@ -60,8 +60,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 String text = editText.getText().toString();    // 取得editText打入的內容
                 editor.putString("editText", text).apply();     // 寫到名稱為editText內，最後要加apply才會成功
-                if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)
-                {
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
                     click(v);
                     return true;
                 }
@@ -80,9 +79,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        radioGroup.check(sp.getInt("radioGroup", R.id.blackTeaRadioButton));    // 取得sp內名為radioGroup的Int資料，第二個參數為Default值
+
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                editor.putInt("radioGroup", checkedId); // editor寫入在名稱為radioGroup，被選到的物件，放到Int內。
+                editor.apply(); // 寫入後要加入此方法。
                 RadioButton radioButton = (RadioButton) findViewById(checkedId);
                 drinkName = radioButton.getText().toString();
             }
@@ -95,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //用parent取得OrderAdapter，再用OrderAdapter的getItem取得第幾筆資料，用position取得第幾筆。
-                Order order = (Order)parent.getAdapter().getItem(position);
-                Snackbar.make(view, order.note, Snackbar.LENGTH_SHORT).show();
+                Order order = (Order) parent.getAdapter().getItem(position);
+                Snackbar.make(view, order.note, Snackbar.LENGTH_SHORT).show();  // 元件
             }
         });
 
