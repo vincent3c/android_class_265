@@ -2,25 +2,31 @@ package com.example.user.simpleui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     TextView textView;
     EditText editText;
     RadioGroup radioGroup;
-    String sex = "";
-    String selectedSex = "Male";
-    String name = "";
+    ArrayList<Order> orders;
+    String drinkName = "black tea";
+    String note = "";
     CheckBox checkBox;
+    ListView listView;
+    Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
         editText = (EditText)findViewById(R.id.editText);
         radioGroup = (RadioGroup)findViewById(R.id.radioGroup);
         checkBox = (CheckBox)findViewById(R.id.hideCheckBox);
+        listView = (ListView)findViewById(R.id.listView);
+        spinner = (Spinner)findViewById(R.id.spinner);
+        orders = new ArrayList<>();
 
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -57,44 +66,44 @@ public class MainActivity extends AppCompatActivity {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.maleRadioButton) {
-                    selectedSex = "Male";
-                } else if (checkedId == R.id.femaleRadioButton) {
-                    selectedSex = "Female";
-                }
+                RadioButton radioButton = (RadioButton) findViewById(checkedId);
+                drinkName = radioButton.getText().toString();
             }
         });
 
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(name != "")
-                {
-                    changeTextView();
-                }
-            }
-        });
+        setupListView();
+        setupSpinner();
+    }
+
+    void setupListView()
+    {
+        OrderAdapter adapter = new OrderAdapter(this, orders);
+        listView.setAdapter(adapter);
+    }
+
+    void  setupSpinner()
+    {
+        String[] data = getResources().getStringArray(R.array.storeInfo);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, data);
+
+        spinner.setAdapter(adapter);
     }
 
     public void click(View view)
     {
-        name = editText.getText().toString();
-        sex = selectedSex;
-        changeTextView();
-        editText.setText("");
-    }
+        note = editText.getText().toString();
+        String text = note;
+        textView.setText(text);
 
-    public void changeTextView()
-    {
-        if (checkBox.isChecked())
-        {
-            String text = name;
-            textView.setText(text);
-        }
-        else
-        {
-            String text = name + " sex: " + sex;
-            textView.setText(text);
-        }
+        Order order = new Order();
+        order.drinkName = drinkName;
+        order.note = note;
+        order.storeInfo = (String)spinner.getSelectedItem();
+
+        orders.add(order);
+
+        editText.setText("");
+
+        setupListView();
     }
 }
