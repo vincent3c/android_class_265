@@ -1,5 +1,7 @@
 package com.example.user.simpleui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     Spinner spinner;
 
+    // 將資料寫入手機內設定
+    SharedPreferences sp;   //宣告物件，暫稱為字典
+    SharedPreferences.Editor editor;    // 取得字典專用的筆
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,9 +49,17 @@ public class MainActivity extends AppCompatActivity {
         spinner = (Spinner)findViewById(R.id.spinner);
         orders = new ArrayList<>();
 
+        // 實體化字典，MODE_PRIVATE可以寫入及讀取
+        sp = getSharedPreferences("setting", Context.MODE_PRIVATE); // 取名為setting的字典
+        editor = sp.edit(); // sp取得筆，之後才可以寫入
+        // 下次進來讀入上次editor.puString的內容，取得上次寫在editText內的內容
+        editText.setText(sp.getString("editText", ""));
+
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
+                String text = editText.getText().toString();    // 取得editText打入的內容
+                editor.putString("editText", text).apply();     // 寫到名稱為editText內，最後要加apply才會成功
                 if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)
                 {
                     click(v);
